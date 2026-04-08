@@ -12,3 +12,7 @@
 * **Integrated Task List:** A lightweight to-do manager with persistent storage.
 
  ⚙️ Click the character to open the Settings menu.
+
+## ⚖️ Legal
+
+This is a personal project. While the code is hosted publicly, the **pixel art and character designs** are original assets and are **not** open-source. Please do not use them in your own projects or redistribute them. 
