@@ -1,0 +1,82 @@
+name: Release
+
+# run-name appears as the title of each individual run in the Actions tab UI
+run-name: "Release ${{ github.ref_name }} by @${{ github.actor }}"
+
+# TRIGGER: this workflow only runs when you push a tag starting with 'v'
+# (e.g. v1.0.0). Pushing to main or any branch does NOT trigger it.
+on:
+  push:
+    tags:
+      - 'v*'
+
+# PERMISSIONS: allow this workflow to create/update GitHub Releases
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # RUNNER: the virtual machine GitHub spins up to execute the steps.
+    # We use Windows because JavaFX bundles platform-specific native libraries
+    runs-on: windows-latest
+
+    steps:
+      # 1. Check out the repository code onto the runner
+      - uses: actions/checkout@v4
+
+      # 2. Install Java on the runner.
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      # 3. Build a "fat JAR" - a single .jar that includes all dependencies
+      #    (JavaFX, Twitch4J, etc.) so users don't need them installed separately.
+      #    Maven runs 'package' which also triggers the shade plugin we configured in pom.xml.
+      - name: Build fat JAR
+        run: mvn -B package --no-transfer-progress
+
+      # 4. Create the portable zip: copy the JAR + assets folder, then compress.
+      #    Users who have Java installed can just extract this and run the JAR.
+      - name: Bundle portable zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path release | Out-Null
+          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination release\RootlifyFocus.jar
+          Copy-Item -Recurse assets release\assets
+          Compress-Archive -Path release\* -DestinationPath "RootlifyFocus-${{ github.ref_name }}-portable.zip"
+
+      # 5. Build a native Windows .exe installer using 'jpackage' (ships with the JDK).
+      #    jpackage bundles a trimmed JRE inside the installer so users don't need Java installed.
+      #    jpackage requires a version in X.Y.Z format, so we strip the 'v' prefix
+      #    and pad missing segments (e.g. v1.0 -> 1.0.0).
+      - name: Build Windows installer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path pkg-input, pkg-output | Out-Null
+          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination pkg-input\RootlifyFocus.jar
+          Copy-Item -Recurse assets pkg-input\assets
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $parts = $version.Split('.')
+          while ($parts.Length -lt 3) { $parts += '0' }
+          $version = $parts[0..2] -join '.'
+          jpackage `
+            --input pkg-input `
+            --main-jar RootlifyFocus.jar `
+            --main-class com.onrender.rootlify.Launcher `
+            --name RootlifyFocus `
+            --app-version $version `
+            --type exe `
+            --win-dir-chooser `
+            --win-shortcut `
+            --dest pkg-output
+
+      # 6. Create the GitHub Release and attach both artifacts.
+      #    'generate_release_notes' auto-fills the release description with commits since the last tag.
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            RootlifyFocus-${{ github.ref_name }}-portable.zip
+            pkg-output/RootlifyFocus-*.exe
+          generate_release_notes: true
