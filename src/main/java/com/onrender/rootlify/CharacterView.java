@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import java.io.File;
 
 public class CharacterView extends StackPane {
     private ImageView skin, outfit, hair;
@@ -43,9 +44,9 @@ public class CharacterView extends StackPane {
 
     public void refresh() {
         try {
-            skin.setImage(new Image("file:assets/skins/" + MainApp.current_skin, size, size, true, true));
-            outfit.setImage(new Image("file:assets/outfits/" + MainApp.current_outfit, size, size, true, true));
-            hair.setImage(new Image("file:assets/hair/" + MainApp.current_hair, size, size, true, true));
+            skin.setImage(new Image(new File("assets/skins/" + MainApp.current_skin).toURI().toString(), size, size, true, true));
+            outfit.setImage(new Image(new File("assets/outfits/" + MainApp.current_outfit).toURI().toString(), size, size, true, true));
+            hair.setImage(new Image(new File("assets/hair/" + MainApp.current_hair).toURI().toString(), size, size, true, true));
         } catch (Exception e) {}
     }
 

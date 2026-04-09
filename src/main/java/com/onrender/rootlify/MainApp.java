@@ -224,7 +224,9 @@ public class MainApp extends Application {
         scene.setFill(Color.TRANSPARENT);
         primaryStage.setScene(scene);
         primaryStage.setAlwaysOnTop(true);
-        try { primaryStage.getIcons().add(new Image("file:icon.png")); } catch (Exception e) {}
+        try {
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+        } catch (Exception e) {}
         applyNewSettings();
         primaryStage.show();
 
@@ -724,7 +726,7 @@ class TaskItem extends HBox {
         this.setStyle("-fx-background-color: white; -fx-padding: 5px 10px; -fx-background-radius: 10px; -fx-cursor: hand;");
 
         // heart checkbox
-        icon = new ImageView(new Image("file:assets/checkboxes/heart1.png", 18, 18, true, true));
+        icon = new ImageView(new Image(new File("assets/checkboxes/heart1.png").toURI().toString(), 18, 18, true, true));
 
         // to do list text
         txt = new Text(text);
@@ -767,8 +769,7 @@ class TaskItem extends HBox {
 
     public void setDone() {
         this.done = true;
-        icon.setImage(new Image("file:assets/checkboxes/heart2.png", 18, 18, true, true));
-        txt.setStrikethrough(true);
+        icon.setImage(new Image(new File("assets/checkboxes/heart2.png").toURI().toString(), 18, 18, true, true));
         txt.setStyle("-fx-font-size: 15px; -fx-fill: #8a6a77; -fx-font-weight: bold;");
     }
 }
