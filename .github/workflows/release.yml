@@ -42,9 +42,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path release | Out-Null
-          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination release\RootlifyFocus.jar
+          Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination release\RootliFocus.jar
           Copy-Item -Recurse assets release\assets
-          Compress-Archive -Path release\* -DestinationPath "RootlifyFocus-${{ github.ref_name }}-portable.zip"
+          Compress-Archive -Path release\* -DestinationPath "RootliFocus-${{ github.ref_name }}-portable.zip"
 
       # 5. Build a native Windows .exe installer using 'jpackage' (ships with the JDK).
       #    jpackage bundles a trimmed JRE inside the installer so users don't need Java installed.
@@ -88,6 +88,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            RootlifyFocus-${{ github.ref_name }}-portable.zip
-            pkg-output/RootlifyFocus-*.exe
+            RootliFocus-${{ github.ref_name }}-portable.zip
+            pkg-output/RootliFocus-*.exe
           generate_release_notes: true
