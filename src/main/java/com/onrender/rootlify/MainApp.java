@@ -280,7 +280,8 @@ public class MainApp extends Application {
 
     private void loadSettings() {
         Properties prop = new Properties();
-        try (FileInputStream input = new FileInputStream("config.properties")) {
+        File configFile = new File(System.getProperty("user.dir"), "config.properties");
+        try (FileInputStream input = new FileInputStream(configFile)) {
             prop.load(input);
             twitch_channel = prop.getProperty("twitch_channel", "scoobxie");
             focus_time = Integer.parseInt(prop.getProperty("focus_time", "25"));
@@ -391,7 +392,8 @@ public class MainApp extends Application {
     }
 
     public static void saveTasksToFile() {
-        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter("tasks.txt"))) {
+        File file = new File(System.getProperty("user.dir"), "tasks.txt");
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(file))) {
             for (ViewerColumn col : activeViewers.values()) {
                 if (col.getUsername().equals(twitch_channel) || col.getUsername().equals("me")) {
                     for (javafx.scene.Node node : col.getChildren()) {
@@ -406,13 +408,16 @@ public class MainApp extends Application {
                     }
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+        } catch (Exception e) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error: " + e.getMessage() + "\nMove folder to Desktop!", ButtonType.OK);
+                alert.showAndWait();
+            });
         }
     }
 
     private void loadTasksFromFile() {
-        File file = new File("tasks.txt");
+        File file = new File(System.getProperty("user.dir"), "tasks.txt");
         if (!file.exists()) return;
 
         try (java.util.Scanner scanner = new java.util.Scanner(file)) {
@@ -641,8 +646,9 @@ class SettingsWindow {
 
     private static void saveConfig() {
         try {
+            File configFile = new File(System.getProperty("user.dir"), "config.properties");
             java.util.Properties prop = new java.util.Properties();
-            java.io.FileInputStream in = new java.io.FileInputStream("config.properties");
+            java.io.FileInputStream in = new java.io.FileInputStream(configFile);
             prop.load(in);
             in.close();
 
@@ -657,7 +663,7 @@ class SettingsWindow {
             prop.setProperty("color_username", MainApp.color_username);
             prop.setProperty("twitch_channel", MainApp.twitch_channel);
 
-            java.io.FileOutputStream out = new java.io.FileOutputStream("config.properties");
+            java.io.FileOutputStream out = new java.io.FileOutputStream(configFile);
             prop.store(out, "Updated via Settings Menu");
             out.close();
         } catch (Exception e) {}
