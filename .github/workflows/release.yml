@@ -60,7 +60,9 @@ jobs:
           $parts = $version.Split('.')
           while ($parts.Length -lt 3) { $parts += '0' }
           $version = $parts[0..2] -join '.'
+
           
+          # Build the folder structure
           jpackage `
             --type app-image `
             --input pkg-input `
@@ -80,7 +82,7 @@ jobs:
             --win-dir-chooser `
             --win-shortcut `
             --win-per-user-install `
-            --dest pkg-output 
+            --dest pkg-output
 
       # 6. Create the GitHub Release and attach both artifacts.
       #    'generate_release_notes' auto-fills the release description with commits since the last tag.
