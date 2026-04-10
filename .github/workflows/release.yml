@@ -53,23 +53,30 @@ jobs:
       - name: Build Windows installer
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path pkg-input, pkg-output | Out-Null
-          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination pkg-input\RootlifyFocus.jar
-          Copy-Item -Recurse assets pkg-input\assets
+          New-Item -ItemType Directory -Path pkg-input, pkg-output, image-output | Out-Null
+          Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination pkg-input\RootliFocus.jar
           $version = "${{ github.ref_name }}" -replace '^v', ''
           $parts = $version.Split('.')
           while ($parts.Length -lt 3) { $parts += '0' }
           $version = $parts[0..2] -join '.'
           jpackage `
+            --type app-image `
             --input pkg-input `
-            --main-jar RootlifyFocus.jar `
+            --main-jar RootliFocus.jar `
             --main-class com.onrender.rootlify.Launcher `
-            --name RootlifyFocus `
+            --name RootliFocus `
             --app-version $version `
+            --dest image-output
+            Copy-Item -Recurse assets image-output\RootliFocus\assets
+            jpackage `
             --type exe `
+            --app-image image-output\RootliFocus `
+            --name RootliFocus `
+            --app-version $version `
             --win-dir-chooser `
             --win-shortcut `
-            --dest pkg-output
+            --win-per-user-install `
+            --dest pkg-output 
 
       # 6. Create the GitHub Release and attach both artifacts.
       #    'generate_release_notes' auto-fills the release description with commits since the last tag.
