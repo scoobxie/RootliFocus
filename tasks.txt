@@ -1,4 +1,5 @@
-scoobxie|save tasks in exe & app|true
 scoobxie|show assets in app|false
 scoobxie|fix tasks length|false
-scoobxie|do SAS project|false
+scoobxie|Econometrics project|false
+scoobxie|SAS project|false
+scoobxie|C# project|false
