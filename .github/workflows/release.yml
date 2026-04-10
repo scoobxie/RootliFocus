@@ -55,14 +55,13 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path pkg-input, pkg-output, image-output | Out-Null
           Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination pkg-input\RootliFocus.jar
-         
+          
           $version = "${{ github.ref_name }}" -replace '^v', ''
           $parts = $version.Split('.')
           while ($parts.Length -lt 3) { $parts += '0' }
           $version = $parts[0..2] -join '.'
 
-          
-          # Build the folder structure
+          # Step 1: Build the folder structure
           jpackage `
             --type app-image `
             --input pkg-input `
@@ -71,10 +70,12 @@ jobs:
             --name RootliFocus `
             --app-version $version `
             --dest image-output
-            
-            Copy-Item -Recurse assets image-output\RootliFocus\assets
-            
-            jpackage `
+
+          # Step 2: Move assets
+          Copy-Item -Recurse assets image-output\RootliFocus\assets
+
+          # Step 3: Build the Installer
+          jpackage `
             --type exe `
             --app-image image-output\RootliFocus `
             --name RootliFocus `
