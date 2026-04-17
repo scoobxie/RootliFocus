@@ -225,7 +225,7 @@ public class MainApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.setAlwaysOnTop(true);
         try {
-            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.ico")));
         } catch (Exception e) {}
         applyNewSettings();
         primaryStage.show();
@@ -455,7 +455,7 @@ class SettingsWindow {
         stage.setTitle("RootliFocus Settings");
 
         try {
-            stage.getIcons().add(new Image("file:icon.png"));
+            stage.getIcons().add(new Image("file:icon.ico"));
         } catch (Exception ignored) {}
 
         isBoyMode = MainApp.current_skin.toLowerCase().contains("boy");
