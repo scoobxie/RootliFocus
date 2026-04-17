@@ -53,9 +53,8 @@ jobs:
       - name: Build Windows installer
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path pkg-input, pkg-output | Out-Null
+          New-Item -ItemType Directory -Path pkg-input, pkg-output, app-image-out | Out-Null
           Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination pkg-input\RootliFocus.jar
-          Copy-Item -Recurse assets pkg-input\assets
           $version = "${{ github.ref_name }}" -replace '^v', ''
           $parts = $version.Split('.')
           while ($parts.Length -lt 3) { $parts += '0' }
@@ -64,6 +63,13 @@ jobs:
             --input pkg-input `
             --main-jar RootliFocus.jar `
             --main-class com.onrender.rootlify.Launcher `
+            --name RootliFocus `
+            --app-version $version `
+            --type app-image `
+            --dest app-image-out
+          Copy-Item -Recurse assets app-image-out\RootliFocus\assets
+          jpackage `
+            --app-image app-image-out\RootliFocus `
             --name RootliFocus `
             --app-version $version `
             --type exe `
