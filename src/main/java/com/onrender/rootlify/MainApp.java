@@ -161,7 +161,7 @@ public class MainApp extends Application {
 
         // to do list manual input
         TextField manualTaskInput = new TextField();
-        manualTaskInput.setPromptText("Adaugă task manual (Enter)...");
+        manualTaskInput.setPromptText("Add a task...");
         manualTaskInput.setStyle("-fx-background-radius: 10; -fx-border-color: #ffb3d9; -fx-border-radius: 10; -fx-background-color: white;");
         HBox.setHgrow(manualTaskInput, Priority.ALWAYS);
 
@@ -737,6 +737,7 @@ class TaskItem extends HBox {
         // to do list text
         txt = new Text(text);
         txt.setStyle("-fx-font-size: 15px; -fx-fill: #4a2c3a; -fx-font-weight: bold;");
+        txt.setWrappingWidth(190);
 
         // x button
         deleteBtn = new Label("❌");

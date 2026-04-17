@@ -1,5 +1,3 @@
 scoobxie|show assets in app|false
-scoobxie|fix tasks length|false
 scoobxie|Econometrics project|false
-scoobxie|SAS project|false
 scoobxie|C# project|false
