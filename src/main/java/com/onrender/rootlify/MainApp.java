@@ -648,9 +648,11 @@ class SettingsWindow {
         try {
             File configFile = new File(System.getProperty("user.dir"), "config.properties");
             java.util.Properties prop = new java.util.Properties();
-            java.io.FileInputStream in = new java.io.FileInputStream(configFile);
-            prop.load(in);
-            in.close();
+            if (configFile.exists()) {
+                java.io.FileInputStream in = new java.io.FileInputStream(configFile);
+                prop.load(in);
+                in.close();
+            }
 
             prop.setProperty("current_skin", MainApp.current_skin);
             prop.setProperty("current_hair", MainApp.current_hair);
@@ -666,7 +668,9 @@ class SettingsWindow {
             java.io.FileOutputStream out = new java.io.FileOutputStream(configFile);
             prop.store(out, "Updated via Settings Menu");
             out.close();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
