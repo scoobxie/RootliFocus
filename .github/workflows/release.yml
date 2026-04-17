@@ -42,9 +42,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path release | Out-Null
-          Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination release\RootliFocus.jar
+          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination release\RootlifyFocus.jar
           Copy-Item -Recurse assets release\assets
-          Compress-Archive -Path release\* -DestinationPath "RootliFocus-${{ github.ref_name }}-portable.zip"
+          Compress-Archive -Path release\* -DestinationPath "RootlifyFocus-${{ github.ref_name }}-portable.zip"
 
       # 5. Build a native Windows .exe installer using 'jpackage' (ships with the JDK).
       #    jpackage bundles a trimmed JRE inside the installer so users don't need Java installed.
@@ -54,7 +54,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Path pkg-input, pkg-output | Out-Null
-          Get-ChildItem target\RootliFocus-*.jar | Copy-Item -Destination pkg-input\RootliFocus.jar
+          Get-ChildItem target\RootlifyFocus-*.jar | Copy-Item -Destination pkg-input\RootlifyFocus.jar
           Copy-Item -Recurse assets pkg-input\assets
           $version = "${{ github.ref_name }}" -replace '^v', ''
           $parts = $version.Split('.')
@@ -62,9 +62,9 @@ jobs:
           $version = $parts[0..2] -join '.'
           jpackage `
             --input pkg-input `
-            --main-jar RootliFocus.jar `
+            --main-jar RootlifyFocus.jar `
             --main-class com.onrender.rootlify.Launcher `
-            --name RootliFocus `
+            --name RootlifyFocus `
             --app-version $version `
             --type exe `
             --win-dir-chooser `
@@ -77,6 +77,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            RootliFocus-${{ github.ref_name }}-portable.zip
-            pkg-output/RootliFocus-*.exe
+            RootlifyFocus-${{ github.ref_name }}-portable.zip
+            pkg-output/RootlifyFocus-*.exe
           generate_release_notes: true
