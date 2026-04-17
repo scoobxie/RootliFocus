@@ -65,6 +65,7 @@ jobs:
             --main-class com.onrender.rootlify.Launcher `
             --name RootliFocus `
             --app-version $version `
+            --icon icon.ico `
             --type app-image `
             --dest app-image-out
           Copy-Item -Recurse assets app-image-out\RootliFocus\assets
@@ -72,6 +73,7 @@ jobs:
             --app-image app-image-out\RootliFocus `
             --name RootliFocus `
             --app-version $version `
+            --icon icon.ico `
             --type exe `
             --win-dir-chooser `
             --win-shortcut `
